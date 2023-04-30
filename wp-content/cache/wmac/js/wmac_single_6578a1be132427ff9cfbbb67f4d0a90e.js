@@ -1,0 +1,13 @@
+(function($){'use strict';$.fn.scrollWatch=function(options){var
+settings=$.extend({offset:0,placeholder:true,fixWidth:true,},options),prototype={setWidth:function($this){if(!settings.fixWidth)return;$this.css('width',$this.parent().outerWidth()+'px');},setHeightPlaceholder:function($this){if(!settings.placeholder)return;$this.parent().css('height',$this.outerHeight()+'px');},},previousScrollTop=0,currentScrollTop=0,$window=$(window),$body=$('body');if(jQuery("body").hasClass("left")||jQuery("body").hasClass("right")){return false;}
+$window.on('load.scrollWatch scroll.scrollWatch',function(){var
+currentScrollTop=$window.scrollTop();if(currentScrollTop){$body.removeClass('scrolled-not').addClass('scrolled');}else{$body.removeClass('scrolled').addClass('scrolled-not');}
+if(currentScrollTop<previousScrollTop){$body.removeClass('scrolled-down').addClass('scrolled-up');}else if(currentScrollTop>previousScrollTop){$body.removeClass('scrolled-up').addClass('scrolled-down');}
+previousScrollTop=currentScrollTop;});return this.each(function(index){if(0!==index)return;var
+$this=$(this),elementID=($this.data('scroll-watch-id')||$this.attr('id')||$this.attr('class').split(' ')[0]).trim().replace(/\s+/g,'-'),elementTop=$this.offset().top,elementBottom=elementTop+$this.outerHeight();$window.on('load.scrollWatch scroll.scrollWatch',function(){var
+currentScrollTop=$window.scrollTop();if(currentScrollTop===0||currentScrollTop<settings.offset){prototype.setHeightPlaceholder($this);}
+if(currentScrollTop>elementTop){$body.addClass('scrolled-to-'+elementID);}else{$body.removeClass('scrolled-to-'+elementID);}
+if(settings.offset){if(currentScrollTop>(elementTop+settings.offset)){$body.addClass('scrolled-to-'+elementID+'-offset');}else{$body.removeClass('scrolled-to-'+elementID+'-offset');}}
+if(currentScrollTop>elementBottom){$body.addClass('scrolled-past-'+elementID);}else{$body.removeClass('scrolled-past-'+elementID);}
+if(settings.offset){if(currentScrollTop>(elementBottom+settings.offset)){$body.addClass('scrolled-past-'+elementID+'-offset');}else{$body.removeClass('scrolled-past-'+elementID+'-offset');}}}).on('resize.scrollWatch orientationchange.scrollWatch',function(){elementTop=$this.offset().top,elementBottom=elementTop+$this.outerHeight();});if(settings.placeholder){if(!$this.parent().hasClass('scroll-watch-placeholder')){$this.wrap('<div class="scroll-watch-placeholder '+elementID+'-placeholder"></div>');}
+prototype.setHeightPlaceholder($this);prototype.setWidth($this);$window.on('resize.scrollWatch orientationchange.scrollWatch',function(){prototype.setWidth($this);$this.parent().css('height',$this.outerHeight()+'px');elementTop=$this.parent().offset().top,elementBottom=elementTop+$this.parent().outerHeight();});}});};})(jQuery);
